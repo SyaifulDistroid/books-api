@@ -67,19 +67,15 @@ func init() {
 	})
 	api := app.Group("/books", authMiddleware)
 
-	api.Post("/books", createBook)
-	api.Get("/books", getBooks)
-	api.Get("/books/:id", getBook)
+	api.Post("/", createBook)
+	api.Get("/", getBooks)
+	api.Get("/:id", getBook)
 
-	api.Put("/books/:id", updateBook)
-	api.Delete("/books/:id", deleteBook)
+	api.Put("/:id", updateBook)
+	api.Delete("/:id", deleteBook)
 
+	// app.Listen(":3000")
 }
-
-// func main() {
-
-// 	app.Listen(":3000")
-// }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	adaptor.FiberApp(app)(w, r)
