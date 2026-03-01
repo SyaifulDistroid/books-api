@@ -45,7 +45,7 @@ func init() {
 	}
 	seed4 := Book{
 		ID:     "4",
-		Title:  "1984",
+		Title:  "Lorem ipsum",
 		Author: "George Orwell",
 		Year:   1949,
 	}
@@ -65,6 +65,13 @@ func init() {
 	books["14"] = Book{"14", "Crime and Punishment", "Fyodor Dostoevsky", 1866}
 	books["15"] = Book{"15", "The Alchemist", "Paulo Coelho", 1988}
 	books["16"] = Book{"16", "The Odyssey", "Homer", -700}
+	books["17"] = Book{"17", "The Divine Comedy", "Dante Alighieri", 1320}
+	books["18"] = Book{"18", "Les Misérables", "Victor Hugo", 1862}
+	books["19"] = Book{"19", "Don Quixote", "Miguel de Cervantes", 1605}
+	books["20"] = Book{"20", "Dracula", "Bram Stoker", 1897}
+	books["21"] = Book{"21", "The Brothers Karamazov", "Fyodor Dostoevsky", 1880}
+	books["22"] = Book{"22", "Brave New World", "Aldous Huxley", 1932}
+	books["23"] = Book{"23", "The Road", "Cormac McCarthy", 2006}
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
@@ -142,13 +149,13 @@ func createBook(c *fiber.Ctx) error {
 func getBooks(c *fiber.Ctx) error {
 	author := strings.TrimSpace(c.Query("author"))
 	page, _ := strconv.Atoi(c.Query("page", "1"))
-	limit, _ := strconv.Atoi(c.Query("limit", "10"))
+	limit, _ := strconv.Atoi(c.Query("limit", "2"))
 
 	if page < 1 {
 		page = 1
 	}
 	if limit < 1 {
-		limit = 10
+		limit = 2
 	}
 
 	var filtered []Book
