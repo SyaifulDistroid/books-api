@@ -13,7 +13,7 @@ type Book struct {
 	ID     string `json:"id"`
 	Title  string `json:"title"`
 	Author string `json:"author"`
-	Year   string `json:"year"`
+	Year   int    `json:"year"`
 }
 
 var books = make(map[string]Book)
@@ -28,7 +28,7 @@ func init() {
 		ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee44e",
 		Title:  "Dune",
 		Author: "Frank Herbert",
-		Year:   "2000",
+		Year:   2000,
 	}
 	books[seed.ID] = seed
 
@@ -135,16 +135,20 @@ func getBook(c *fiber.Ctx) error {
 func updateBook(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	var input Book
-	if err := c.BodyParser(&input); err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"error": "invalid input",
+	book, ok := books[id]
+	if !ok {
+		return c.Status(200).JSON(fiber.Map{
+			"data":  fmt.Sprint(book),
+			"error": "not found",
 		})
 	}
 
-	book, ok := books[id]
-	if !ok {
-		book = Book{ID: id}
+	var input Book
+	if err := c.BodyParser(&input); err != nil {
+		return c.Status(200).JSON(fiber.Map{
+			"data":  fmt.Sprint(input),
+			"error": "invalid input",
+		})
 	}
 
 	book.Title = input.Title
