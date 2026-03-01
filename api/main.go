@@ -22,6 +22,12 @@ const token = "supersecret"
 var app = fiber.New()
 
 func init() {
+	seed := Book{
+		ID:     "1",
+		Title:  "Dune",
+		Author: "Frank Herbert",
+	}
+	books["1"] = seed
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
