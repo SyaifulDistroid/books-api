@@ -6,7 +6,6 @@ import (
 
 	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type Book struct {
