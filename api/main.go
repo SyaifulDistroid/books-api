@@ -1,40 +1,46 @@
-package handler
+package main
 
 import (
-	"net/http"
-	"strconv"
+	"database/sql"
+	"fmt"
+	"log"
 
-	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
+	_ "modernc.org/sqlite"
 )
 
 type Book struct {
 	ID     string `json:"id"`
 	Title  string `json:"title"`
 	Author string `json:"author"`
-	Year   string `json:"year"`
+	Year   int    `json:"year"`
 }
 
-var books = make(map[string]Book)
-var idCounter = 1
+var db *sql.DB
 
-const token = "supersecret"
-
-var app = fiber.New()
-
-func init() {
-	seed := Book{
-		ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee44e",
-		Title:  "Dune",
-		Author: "Frank Herbert",
-		Year:   "2000",
+func main() {
+	var err error
+	db, err = sql.Open("sqlite", "books.db")
+	if err != nil {
+		log.Fatal(err)
 	}
-	books["1"] = seed
+
+	_, err = db.Exec(`
+	CREATE TABLE IF NOT EXISTS books (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		title TEXT NOT NULL,
+		author TEXT NOT NULL,
+		year INTEGER NOT NULL
+	);
+	`)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	app := fiber.New()
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
-		return c.Status(200).JSON(fiber.Map{
-			"success": true,
-		})
+		return c.JSON(fiber.Map{"success": true})
 	})
 
 	app.Post("/echo", func(c *fiber.Ctx) error {
@@ -42,123 +48,112 @@ func init() {
 		return c.Send(c.Body())
 	})
 
-	app.Post("/auth/token", func(c *fiber.Ctx) error {
-		return c.JSON(fiber.Map{"token": token})
-	})
-
 	app.Post("/books", createBook)
 	app.Get("/books", getBooks)
 	app.Get("/books/:id", getBook)
-
 	app.Put("/books/:id", updateBook)
 	app.Delete("/books/:id", deleteBook)
-	// _ = app.Group("/", authMiddleware)
-}
 
-func Handler(w http.ResponseWriter, r *http.Request) {
-	adaptor.FiberApp(app)(w, r)
-}
-
-func authMiddleware(c *fiber.Ctx) error {
-	auth := c.Get("Authorization")
-	if auth != "Bearer "+token {
-		return c.Status(401).JSON(fiber.Map{"error": "unauthorized"})
-	}
-	return c.Next()
+	log.Fatal(app.Listen(":3000"))
 }
 
 func createBook(c *fiber.Ctx) error {
 	var book Book
 	if err := c.BodyParser(&book); err != nil || book.Title == "" {
-		return c.Status(400).JSON(fiber.Map{
-			"error": "invalid input",
-		})
+		return c.Status(400).JSON(fiber.Map{"error": "invalid input"})
 	}
 
-	book.ID = strconv.Itoa(idCounter)
-	idCounter++
+	result, err := db.Exec(
+		"INSERT INTO books (title, author, year) VALUES (?, ?, ?)",
+		book.Title, book.Author, book.Year,
+	)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "db error"})
+	}
 
-	books[book.ID] = book
+	id, _ := result.LastInsertId()
+	book.ID = fmt.Sprintf("%d", id)
 
 	return c.Status(201).JSON(book)
 }
 
 func getBooks(c *fiber.Ctx) error {
-	author := c.Query("author")
-	page, _ := strconv.Atoi(c.Query("page", "1"))
-	limit, _ := strconv.Atoi(c.Query("limit", "10"))
-
-	if page < 1 {
-		page = 1
+	rows, err := db.Query("SELECT id, title, author, year FROM books")
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "db error"})
 	}
-	if limit < 1 {
-		limit = 10
-	}
+	defer rows.Close()
 
-	var result []Book
-	for _, b := range books {
-		if author == "" || b.Author == author {
-			result = append(result, b)
-		}
+	var books []Book
+	for rows.Next() {
+		var book Book
+		var id int
+		rows.Scan(&id, &book.Title, &book.Author, &book.Year)
+		book.ID = fmt.Sprintf("%d", id)
+		books = append(books, book)
 	}
 
-	start := (page - 1) * limit
-	end := start + limit
-
-	if start > len(result) {
-		return c.JSON([]Book{})
-	}
-	if end > len(result) {
-		end = len(result)
-	}
-
-	return c.JSON(result[start:end])
+	return c.JSON(books)
 }
 
 func getBook(c *fiber.Ctx) error {
 	id := c.Params("id")
-	book, ok := books[id]
-	if !ok {
+
+	row := db.QueryRow(
+		"SELECT id, title, author, year FROM books WHERE id=?",
+		id,
+	)
+
+	var book Book
+	var bookID int
+	err := row.Scan(&bookID, &book.Title, &book.Author, &book.Year)
+	if err == sql.ErrNoRows {
 		return c.Status(404).JSON(fiber.Map{"error": "not found"})
 	}
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "db error"})
+	}
+
+	book.ID = fmt.Sprintf("%d", bookID)
 	return c.JSON(book)
 }
 
 func updateBook(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	book, ok := books[id]
-	if !ok {
-		return c.Status(200).JSON(fiber.Map{
-			"error": "not found",
-		})
-	}
-
 	var input Book
 	if err := c.BodyParser(&input); err != nil {
-		return c.Status(200).JSON(fiber.Map{
-			"error": "invalid input",
-		})
+		return c.Status(400).JSON(fiber.Map{"error": "invalid input"})
 	}
 
-	book.Title = "Update"
-	book.Author = input.Author
-	book.Year = input.Year
+	result, err := db.Exec(
+		"UPDATE books SET title=?, author=?, year=? WHERE id=?",
+		input.Title, input.Author, input.Year, id,
+	)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "db error"})
+	}
 
-	books[id] = book
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return c.Status(404).JSON(fiber.Map{"error": "not found"})
+	}
 
-	return c.JSON(book)
+	return getBook(c)
 }
+
 func deleteBook(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	if _, ok := books[id]; !ok {
-		return c.Status(200).JSON(fiber.Map{
-			"error": "not found",
-		})
+	result, err := db.Exec("DELETE FROM books WHERE id=?", id)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "db error"})
 	}
 
-	delete(books, id)
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return c.Status(404).JSON(fiber.Map{"error": "not found"})
+	}
 
 	return c.SendStatus(204)
 }
