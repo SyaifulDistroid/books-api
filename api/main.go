@@ -126,7 +126,7 @@ func createBook(c *fiber.Ctx) error {
 func getBooks(c *fiber.Ctx) error {
 	author := c.Query("author")
 	page, _ := strconv.Atoi(c.Query("page", "1"))
-	limit, _ := strconv.Atoi(c.Query("limit", "2"))
+	limit, _ := strconv.Atoi(c.Query("limit", "10"))
 
 	if page < 1 {
 		page = 1
