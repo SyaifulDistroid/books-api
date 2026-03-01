@@ -66,8 +66,8 @@ func init() {
 	books[seed2.ID] = seed2
 	books[seed3.ID] = seed3
 	books[seed4.ID] = seed4
-	books[seed5.ID] = seed3
-	books[seed6.ID] = seed4
+	books[seed5.ID] = seed5
+	books[seed6.ID] = seed6
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
@@ -145,13 +145,13 @@ func createBook(c *fiber.Ctx) error {
 func getBooks(c *fiber.Ctx) error {
 	author := c.Query("author")
 	page, _ := strconv.Atoi(c.Query("page", "1"))
-	limit, _ := strconv.Atoi(c.Query("limit", "10"))
+	limit, _ := strconv.Atoi(c.Query("limit", "2"))
 
 	if page < 1 {
 		page = 1
 	}
 	if limit < 1 {
-		limit = 10
+		limit = 2
 	}
 
 	var filtered []Book
