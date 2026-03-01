@@ -44,7 +44,7 @@ func init() {
 
 	app.Put("/books/:id", updateBook)
 	app.Delete("/books/:id", deleteBook)
-	_ = app.Group("/", authMiddleware)
+	// _ = app.Group("/", authMiddleware)
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -129,9 +129,8 @@ func updateBook(c *fiber.Ctx) error {
 
 	book.Title = input.Title
 	book.Author = input.Author
-	book.Year = input.Year
 
-	books[id] = book // 🔥 WAJIB simpan kembali
+	books[id] = book
 
 	return c.JSON(book)
 }
@@ -146,5 +145,5 @@ func deleteBook(c *fiber.Ctx) error {
 
 	delete(books, id)
 
-	return c.SendStatus(204) // atau 200
+	return c.SendStatus(204)
 }
