@@ -132,13 +132,13 @@ func createBook(c *fiber.Ctx) error {
 func getBooks(c *fiber.Ctx) error {
 	author := c.Query("author")
 	page, _ := strconv.Atoi(c.Query("page", "1"))
-	limit, _ := strconv.Atoi(c.Query("limit", "2"))
+	limit, _ := strconv.Atoi(c.Query("limit", "10"))
 
 	if page < 1 {
 		page = 1
 	}
 	if limit < 1 {
-		limit = 2
+		limit = 10
 	}
 
 	var all []Book
@@ -147,7 +147,7 @@ func getBooks(c *fiber.Ctx) error {
 	}
 
 	sort.Slice(all, func(i, j int) bool {
-		return all[i].ID < all[j].ID
+		return all[i].Title < all[j].Title
 	})
 
 	var filtered []Book
@@ -157,7 +157,6 @@ func getBooks(c *fiber.Ctx) error {
 		}
 	}
 
-	// STEP 4: pagination
 	start := (page - 1) * limit
 	if start >= len(filtered) {
 		return c.JSON([]Book{})
