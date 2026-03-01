@@ -79,8 +79,6 @@ func init() {
 	books["21"] = Book{"21", "The Brothers Karamazov", "Fyodor Dostoevsky", 1880}
 	books["22"] = Book{"22", "Brave New World", "Aldous Huxley", 1932}
 	books["23"] = Book{"23", "The Road", "Cormac McCarthy", 2006}
-	books["24"] = Book{"24", "Homage to Catalonia", "George Orwell", 1938}
-	books["25"] = Book{"25", "Down and Out in Paris and London", "George Orwell", 1933}
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
