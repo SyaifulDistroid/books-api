@@ -141,8 +141,9 @@ func updateBook(c *fiber.Ctx) error {
 		})
 	}
 
-	book.Title = input.Title
+	book.Title = "Update"
 	book.Author = input.Author
+	book.Year = input.Year
 
 	books[id] = book
 
