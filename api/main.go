@@ -1,4 +1,4 @@
-package handler
+package main
 
 import (
 	"fmt"
@@ -30,7 +30,7 @@ func init() {
 		Author: "Frank Herbert",
 		Year:   "2000",
 	}
-	books["e67d1777-99e9-4597-a33d-9cc2aa9ee44e"] = seed
+	books[seed.ID] = seed
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
@@ -54,8 +54,12 @@ func init() {
 	app.Put("/books/:id", updateBook)
 	app.Delete("/books/:id", deleteBook)
 	// _ = app.Group("/", authMiddleware)
-	// app.Listen(":3000")
 
+}
+
+func main() {
+
+	app.Listen(":3000")
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
