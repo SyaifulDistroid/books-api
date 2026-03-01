@@ -69,6 +69,27 @@ func init() {
 	books[seed5.ID] = seed5
 	books[seed6.ID] = seed6
 
+	books["7"] = Book{"7", "The Hobbit", "J.R.R. Tolkien", 1937}
+	books["8"] = Book{"8", "Fahrenheit 451", "Ray Bradbury", 1953}
+	books["9"] = Book{"9", "The Catcher in the Rye", "J.D. Salinger", 1951}
+	books["10"] = Book{"10", "Moby Dick", "Herman Melville", 1851}
+	books["11"] = Book{"11", "To Kill a Mockingbird", "Harper Lee", 1960}
+	books["12"] = Book{"12", "The Great Gatsby", "F. Scott Fitzgerald", 1925}
+	books["13"] = Book{"13", "War and Peace", "Leo Tolstoy", 1869}
+	books["14"] = Book{"14", "Crime and Punishment", "Fyodor Dostoevsky", 1866}
+	books["15"] = Book{"15", "The Alchemist", "Paulo Coelho", 1988}
+	books["16"] = Book{"16", "The Odyssey", "Homer", -700}
+	books["17"] = Book{"17", "The Divine Comedy", "Dante Alighieri", 1320}
+	books["18"] = Book{"18", "Les Misérables", "Victor Hugo", 1862}
+	books["19"] = Book{"19", "Don Quixote", "Miguel de Cervantes", 1605}
+	books["20"] = Book{"20", "Dracula", "Bram Stoker", 1897}
+	books["21"] = Book{"21", "The Brothers Karamazov", "Fyodor Dostoevsky", 1880}
+	books["22"] = Book{"22", "Brave New World", "Aldous Huxley", 1932}
+	books["23"] = Book{"23", "The Road", "Cormac McCarthy", 2006}
+	books["24"] = Book{"24", "Homage to Catalonia", "George Orwell", 1938}
+	books["25"] = Book{"25", "Down and Out in Paris and London", "George Orwell", 1933}
+	books["26"] = Book{"26", "The Stranger", "Albert Camus", 1942}
+
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
 			"success": true,
