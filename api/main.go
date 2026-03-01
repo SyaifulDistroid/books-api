@@ -1,11 +1,11 @@
-package main
+package handler
 
 import (
-	// "net/http"
 	"fmt"
+	"net/http"
 	"strconv"
 
-	// "github.com/gofiber/adaptor/v2"
+	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -32,9 +32,6 @@ func init() {
 	}
 	books["e67d1777-99e9-4597-a33d-9cc2aa9ee44e"] = seed
 
-}
-
-func main() {
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
 			"success": true,
@@ -57,12 +54,13 @@ func main() {
 	app.Put("/books/:id", updateBook)
 	app.Delete("/books/:id", deleteBook)
 	// _ = app.Group("/", authMiddleware)
-	app.Listen(":3000")
+	// app.Listen(":3000")
+
 }
 
-// func Handler(w http.ResponseWriter, r *http.Request) {
-// 	adaptor.FiberApp(app)(w, r)
-// }
+func Handler(w http.ResponseWriter, r *http.Request) {
+	adaptor.FiberApp(app)(w, r)
+}
 
 func authMiddleware(c *fiber.Ctx) error {
 	auth := c.Get("Authorization")
