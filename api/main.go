@@ -135,27 +135,27 @@ func getBook(c *fiber.Ctx) error {
 func updateBook(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	book, ok := books[id]
-	if !ok {
-		return c.Status(200).JSON(fiber.Map{
-			"error": "not found",
-		})
-	}
-
 	var input Book
 	if err := c.BodyParser(&input); err != nil {
-		return c.Status(200).JSON(fiber.Map{
+		return c.Status(400).JSON(fiber.Map{
 			"error": "invalid input",
 		})
 	}
 
+	book, ok := books[id]
+	if !ok {
+		book = Book{ID: id}
+	}
+
 	book.Title = input.Title
 	book.Author = input.Author
+	book.Year = input.Year
 
 	books[id] = book
 
 	return c.JSON(book)
 }
+
 func deleteBook(c *fiber.Ctx) error {
 	id := c.Params("id")
 
