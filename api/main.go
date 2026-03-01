@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"fmt"
@@ -57,10 +57,10 @@ func init() {
 
 }
 
-func main() {
+// func main() {
 
-	app.Listen(":3000")
-}
+// 	app.Listen(":3000")
+// }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	adaptor.FiberApp(app)(w, r)
