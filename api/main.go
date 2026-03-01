@@ -30,15 +30,8 @@ func init() {
 	})
 
 	app.Post("/echo", func(c *fiber.Ctx) error {
-		var body interface{}
-
-		if err := c.BodyParser(&body); err != nil {
-			return c.Status(400).JSON(fiber.Map{
-				"error": "invalid json",
-			})
-		}
-
-		return c.JSON(body)
+		c.Set("Content-Type", "application/json")
+		return c.Send(c.Body())
 	})
 
 	app.Post("/auth/token", func(c *fiber.Ctx) error {
