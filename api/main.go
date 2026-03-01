@@ -3,7 +3,6 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -50,11 +49,25 @@ func init() {
 		Author: "George Orwell",
 		Year:   1949,
 	}
+	seed5 := Book{
+		ID:     "5",
+		Title:  "Dunexx",
+		Author: "Frank Herbert",
+		Year:   2000,
+	}
+	seed6 := Book{
+		ID:     "6",
+		Title:  "Row",
+		Author: "George Orwell",
+		Year:   1949,
+	}
 
 	books[seed1.ID] = seed1
 	books[seed2.ID] = seed2
 	books[seed3.ID] = seed3
 	books[seed4.ID] = seed4
+	books[seed5.ID] = seed3
+	books[seed6.ID] = seed4
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
@@ -132,26 +145,17 @@ func createBook(c *fiber.Ctx) error {
 func getBooks(c *fiber.Ctx) error {
 	author := c.Query("author")
 	page, _ := strconv.Atoi(c.Query("page", "1"))
-	limit, _ := strconv.Atoi(c.Query("limit", "2"))
+	limit, _ := strconv.Atoi(c.Query("limit", "10"))
 
 	if page < 1 {
 		page = 1
 	}
 	if limit < 1 {
-		limit = 2
+		limit = 10
 	}
-
-	var all []Book
-	for _, b := range books {
-		all = append(all, b)
-	}
-
-	sort.Slice(all, func(i, j int) bool {
-		return all[i].Title < all[j].Title
-	})
 
 	var filtered []Book
-	for _, b := range all {
+	for _, b := range books {
 		if author == "" || strings.EqualFold(b.Author, author) {
 			filtered = append(filtered, b)
 		}
