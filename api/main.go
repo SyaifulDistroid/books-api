@@ -26,35 +26,35 @@ const token = "supersecret"
 var app = fiber.New()
 
 func init() {
-	// seed1 := Book{
-	// 	ID:     "1",
-	// 	Title:  "Dune",
-	// 	Author: "Frank Herbert",
-	// 	Year:   2000,
-	// }
-	// seed2 := Book{
-	// 	ID:     "2",
-	// 	Title:  "1984",
-	// 	Author: "George Orwell",
-	// 	Year:   1949,
-	// }
-	// seed3 := Book{
-	// 	ID:     "1",
-	// 	Title:  "Dune",
-	// 	Author: "Frank Herbert",
-	// 	Year:   2000,
-	// }
-	// seed4 := Book{
-	// 	ID:     "2",
-	// 	Title:  "1984",
-	// 	Author: "George Orwell",
-	// 	Year:   1949,
-	// }
+	seed1 := Book{
+		ID:     "1",
+		Title:  "Dune",
+		Author: "Frank Herbert",
+		Year:   2000,
+	}
+	seed2 := Book{
+		ID:     "2",
+		Title:  "1984",
+		Author: "George Orwell",
+		Year:   1949,
+	}
+	seed3 := Book{
+		ID:     "3",
+		Title:  "Dune",
+		Author: "Frank Herbert",
+		Year:   2000,
+	}
+	seed4 := Book{
+		ID:     "4",
+		Title:  "1984",
+		Author: "George Orwell",
+		Year:   1949,
+	}
 
-	// books[seed1.ID] = seed1
-	// books[seed2.ID] = seed2
-	// books[seed3.ID] = seed3
-	// books[seed4.ID] = seed4
+	books[seed1.ID] = seed1
+	books[seed2.ID] = seed2
+	books[seed3.ID] = seed3
+	books[seed4.ID] = seed4
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
@@ -132,13 +132,13 @@ func createBook(c *fiber.Ctx) error {
 func getBooks(c *fiber.Ctx) error {
 	author := c.Query("author")
 	page, _ := strconv.Atoi(c.Query("page", "1"))
-	limit, _ := strconv.Atoi(c.Query("limit", "10"))
+	limit, _ := strconv.Atoi(c.Query("limit", "2"))
 
 	if page < 1 {
 		page = 1
 	}
 	if limit < 1 {
-		limit = 10
+		limit = 2
 	}
 
 	var all []Book
