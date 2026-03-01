@@ -42,9 +42,9 @@ func init() {
 	app.Get("/books", getBooks)
 	app.Get("/books/:id", getBook)
 
-	api := app.Group("/", authMiddleware)
-	api.Put("/books/:id", updateBook)
-	api.Delete("/books/:id", deleteBook)
+	app.Put("/books/:id", updateBook)
+	app.Delete("/books/:id", deleteBook)
+	_ = app.Group("/", authMiddleware)
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -112,28 +112,39 @@ func getBook(c *fiber.Ctx) error {
 
 func updateBook(c *fiber.Ctx) error {
 	id := c.Params("id")
+
 	book, ok := books[id]
 	if !ok {
-		return c.Status(404).JSON(fiber.Map{"error": "not found"})
+		return c.Status(404).JSON(fiber.Map{
+			"error": "not found",
+		})
 	}
 
 	var input Book
 	if err := c.BodyParser(&input); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "invalid input"})
+		return c.Status(400).JSON(fiber.Map{
+			"error": "invalid input",
+		})
 	}
 
 	book.Title = input.Title
 	book.Author = input.Author
-	books[id] = book
+	book.Year = input.Year
+
+	books[id] = book // 🔥 WAJIB simpan kembali
 
 	return c.JSON(book)
 }
-
 func deleteBook(c *fiber.Ctx) error {
 	id := c.Params("id")
+
 	if _, ok := books[id]; !ok {
-		return c.Status(404).JSON(fiber.Map{"error": "not found"})
+		return c.Status(404).JSON(fiber.Map{
+			"error": "not found",
+		})
 	}
+
 	delete(books, id)
-	return c.SendStatus(204)
+
+	return c.SendStatus(204) // atau 200
 }
