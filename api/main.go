@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"net/http"
 
+	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
 	_ "modernc.org/sqlite"
 )
@@ -17,6 +19,8 @@ type Book struct {
 }
 
 var db *sql.DB
+
+var app = fiber.New()
 
 func main() {
 	var err error
@@ -42,8 +46,6 @@ func main() {
 	VALUES (?, ?, ?, ?)
 	`, "e67d1777-99e9-4597-a33d-9cc2aa9ee44e", "Dune", "Frank Herbert", 2000)
 
-	app := fiber.New()
-
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"success": true})
 	})
@@ -58,8 +60,10 @@ func main() {
 	app.Get("/books/:id", getBook)
 	app.Put("/books/:id", updateBook)
 	app.Delete("/books/:id", deleteBook)
+}
 
-	log.Fatal(app.Listen(":3000"))
+func Handler(w http.ResponseWriter, r *http.Request) {
+	adaptor.FiberApp(app)(w, r)
 }
 
 func createBook(c *fiber.Ctx) error {
