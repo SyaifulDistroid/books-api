@@ -33,19 +33,19 @@ func init() {
 	}
 	seed2 := Book{
 		ID:     "2",
-		Title:  "Dune",
+		Title:  "1984",
 		Author: "George Orwell",
-		Year:   1942,
+		Year:   1949,
 	}
 	seed3 := Book{
-		ID:     "3",
+		ID:     "1",
 		Title:  "Dune",
 		Author: "Frank Herbert",
 		Year:   2000,
 	}
 	seed4 := Book{
-		ID:     "4",
-		Title:  "Lorem ipsum",
+		ID:     "2",
+		Title:  "1984",
 		Author: "George Orwell",
 		Year:   1949,
 	}
@@ -160,7 +160,7 @@ func getBooks(c *fiber.Ctx) error {
 
 	var filtered []Book
 	for _, b := range books {
-		if author == "" {
+		if author == "" || strings.EqualFold(strings.TrimSpace(b.Author), author) {
 			filtered = append(filtered, b)
 		}
 	}
