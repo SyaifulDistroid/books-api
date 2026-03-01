@@ -66,8 +66,8 @@ func init() {
 	books[seed2.ID] = seed2
 	books[seed3.ID] = seed3
 	books[seed4.ID] = seed4
-	books[seed5.ID] = seed5
-	books[seed6.ID] = seed6
+	books[seed5.ID] = seed3
+	books[seed6.ID] = seed4
 
 	books["7"] = Book{"7", "The Hobbit", "J.R.R. Tolkien", 1937}
 	books["8"] = Book{"8", "Fahrenheit 451", "Ray Bradbury", 1953}
