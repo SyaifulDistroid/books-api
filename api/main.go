@@ -147,7 +147,7 @@ func createBook(c *fiber.Ctx) error {
 }
 
 func getBooks(c *fiber.Ctx) error {
-	author := c.Query("author")
+	author := strings.TrimSpace(c.Query("author"))
 	page, _ := strconv.Atoi(c.Query("page", "1"))
 	limit, _ := strconv.Atoi(c.Query("limit", "2"))
 
@@ -160,7 +160,7 @@ func getBooks(c *fiber.Ctx) error {
 
 	var filtered []Book
 	for _, b := range books {
-		if author == "" || strings.EqualFold(b.Author, author) {
+		if author == "" || strings.EqualFold(strings.TrimSpace(b.Author), author) {
 			filtered = append(filtered, b)
 		}
 	}
