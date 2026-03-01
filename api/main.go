@@ -44,16 +44,35 @@ func init() {
 	})
 
 	app.Post("/auth/token", func(c *fiber.Ctx) error {
-		return c.JSON(fiber.Map{"token": token})
+		var body struct {
+			Username string `json:"username"`
+			Password string `json:"password"`
+		}
+
+		if err := c.BodyParser(&body); err != nil {
+			return c.Status(400).JSON(fiber.Map{
+				"error": "invalid request",
+			})
+		}
+
+		if body.Username == "admin" && body.Password == "password" {
+			return c.JSON(fiber.Map{
+				"token": token,
+			})
+		}
+
+		return c.Status(401).JSON(fiber.Map{
+			"error": "invalid credentials",
+		})
 	})
+	api := app.Group("/books", authMiddleware)
 
-	app.Post("/books", createBook)
-	app.Get("/books", getBooks)
-	app.Get("/books/:id", getBook)
+	api.Post("/books", createBook)
+	api.Get("/books", getBooks)
+	api.Get("/books/:id", getBook)
 
-	app.Put("/books/:id", updateBook)
-	app.Delete("/books/:id", deleteBook)
-	// _ = app.Group("/", authMiddleware)
+	api.Put("/books/:id", updateBook)
+	api.Delete("/books/:id", deleteBook)
 
 }
 
