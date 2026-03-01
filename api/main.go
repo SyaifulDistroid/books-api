@@ -24,29 +24,29 @@ const token = "supersecret"
 var app = fiber.New()
 
 func init() {
-	seed := Book{
-		ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee44e",
-		Title:  "Dune",
-		Author: "Frank Herbert",
-		Year:   2000,
-	}
-	books[seed.ID] = seed
+	// seed := Book{
+	// 	ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee44e",
+	// 	Title:  "Dune",
+	// 	Author: "Frank Herbert",
+	// 	Year:   2000,
+	// }
+	// books[seed.ID] = seed
 
-	seed2 := Book{
-		ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee44c",
-		Title:  "Dunex",
-		Author: "George Orwell",
-		Year:   2000,
-	}
-	books[seed2.ID] = seed2
+	// seed2 := Book{
+	// 	ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee44c",
+	// 	Title:  "Dunex",
+	// 	Author: "George Orwell",
+	// 	Year:   2000,
+	// }
+	// books[seed2.ID] = seed2
 
-	seed3 := Book{
-		ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee44x",
-		Title:  "Dunez",
-		Author: "George Buss",
-		Year:   2000,
-	}
-	books[seed3.ID] = seed3
+	// seed3 := Book{
+	// 	ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee44x",
+	// 	Title:  "Dunez",
+	// 	Author: "George Buss",
+	// 	Year:   2000,
+	// }
+	// books[seed3.ID] = seed3
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
