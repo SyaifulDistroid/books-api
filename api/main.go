@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"fmt"
@@ -80,8 +80,6 @@ func init() {
 	books["22"] = Book{"22", "Brave New World", "Aldous Huxley", 1932}
 	books["23"] = Book{"23", "The Road", "Cormac McCarthy", 2006}
 
-}
-func main() {
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
 			"success": true,
@@ -124,7 +122,7 @@ func main() {
 	api.Put("/:id", updateBook)
 	api.Delete("/:id", deleteBook)
 
-	app.Listen(":3000")
+	// app.Listen(":3000")
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
