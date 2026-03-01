@@ -16,6 +16,7 @@ type Book struct {
 }
 
 var books = make(map[string]Book)
+var idCounter = 1
 
 const token = "supersecret"
 
@@ -68,10 +69,16 @@ func authMiddleware(c *fiber.Ctx) error {
 func createBook(c *fiber.Ctx) error {
 	var book Book
 	if err := c.BodyParser(&book); err != nil || book.Title == "" {
-		return c.Status(400).JSON(fiber.Map{"error": "invalid input"})
+		return c.Status(400).JSON(fiber.Map{
+			"error": "invalid input",
+		})
 	}
-	book.ID = uuid.New().String()
+
+	book.ID = strconv.Itoa(idCounter)
+	idCounter++
+
 	books[book.ID] = book
+
 	return c.Status(201).JSON(book)
 }
 
