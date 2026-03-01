@@ -117,24 +117,26 @@ func getBooks(c *fiber.Ctx) error {
 		limit = 10
 	}
 
-	var result []Book
+	// STEP 1: FILTER DULU
+	var filtered []Book
 	for _, b := range books {
 		if author == "" || b.Author == author {
-			result = append(result, b)
+			filtered = append(filtered, b)
 		}
 	}
 
+	// STEP 2: PAGINATION SETELAH FILTER
 	start := (page - 1) * limit
-	end := start + limit
-
-	if start > len(result) {
+	if start >= len(filtered) {
 		return c.JSON([]Book{})
 	}
-	if end > len(result) {
-		end = len(result)
+
+	end := start + limit
+	if end > len(filtered) {
+		end = len(filtered)
 	}
 
-	return c.JSON(result[start:end])
+	return c.JSON(filtered[start:end])
 }
 
 func getBook(c *fiber.Ctx) error {
