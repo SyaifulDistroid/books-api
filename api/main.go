@@ -3,7 +3,9 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
@@ -124,7 +126,7 @@ func createBook(c *fiber.Ctx) error {
 func getBooks(c *fiber.Ctx) error {
 	author := c.Query("author")
 	page, _ := strconv.Atoi(c.Query("page", "1"))
-	limit, _ := strconv.Atoi(c.Query("limit", "10"))
+	limit, _ := strconv.Atoi(c.Query("limit", "2"))
 
 	if page < 1 {
 		page = 1
@@ -133,13 +135,23 @@ func getBooks(c *fiber.Ctx) error {
 		limit = 10
 	}
 
-	var filtered []Book
+	var all []Book
 	for _, b := range books {
-		if author == "" || b.Author == author {
+		all = append(all, b)
+	}
+
+	sort.Slice(all, func(i, j int) bool {
+		return all[i].ID < all[j].ID
+	})
+
+	var filtered []Book
+	for _, b := range all {
+		if author == "" || strings.EqualFold(b.Author, author) {
 			filtered = append(filtered, b)
 		}
 	}
 
+	// STEP 4: pagination
 	start := (page - 1) * limit
 	if start >= len(filtered) {
 		return c.JSON([]Book{})
