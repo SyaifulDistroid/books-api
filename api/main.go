@@ -24,14 +24,14 @@ var app = fiber.New()
 
 func main() {
 	var err error
-	db, err = sql.Open("sqlite", "books.db")
+	db, err = sql.Open("sqlite", "book.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	_, err = db.Exec(`
 	CREATE TABLE IF NOT EXISTS books (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		id TEXT PRIMARY KEY,
 		title TEXT NOT NULL,
 		author TEXT NOT NULL,
 		year INTEGER NOT NULL
@@ -41,10 +41,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db.Exec(`
+	_, err = db.Exec(`
 	INSERT OR IGNORE INTO books (id, title, author, year)
 	VALUES (?, ?, ?, ?)
 	`, "e67d1777-99e9-4597-a33d-9cc2aa9ee44e", "Dune", "Frank Herbert", 2000)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"success": true})
@@ -114,8 +117,7 @@ func getBook(c *fiber.Ctx) error {
 	)
 
 	var book Book
-	var bookID int
-	err := row.Scan(&bookID, &book.Title, &book.Author, &book.Year)
+	err := row.Scan(&book.ID, &book.Title, &book.Author, &book.Year)
 	if err == sql.ErrNoRows {
 		return c.Status(404).JSON(fiber.Map{"error": "not found"})
 	}
@@ -123,7 +125,6 @@ func getBook(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "db error"})
 	}
 
-	book.ID = fmt.Sprintf("%d", bookID)
 	return c.JSON(book)
 }
 
