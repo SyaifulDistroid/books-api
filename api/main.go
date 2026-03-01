@@ -135,7 +135,30 @@ func updateBook(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid input"})
 	}
 
-	result, err := db.Exec(
+	var exists string
+	err := db.QueryRow("SELECT id FROM books WHERE id=?", id).Scan(&exists)
+
+	if err == sql.ErrNoRows {
+		_, err = db.Exec(
+			"INSERT INTO books (id, title, author, year) VALUES (?, ?, ?, ?)",
+			id, input.Title, input.Author, input.Year,
+		)
+		if err != nil {
+			return c.Status(500).JSON(fiber.Map{"error": "db error"})
+		}
+		return c.JSON(Book{
+			ID:     id,
+			Title:  input.Title,
+			Author: input.Author,
+			Year:   input.Year,
+		})
+	}
+
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "db error"})
+	}
+
+	_, err = db.Exec(
 		"UPDATE books SET title=?, author=?, year=? WHERE id=?",
 		input.Title, input.Author, input.Year, id,
 	)
@@ -143,12 +166,12 @@ func updateBook(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "db error"})
 	}
 
-	rows, _ := result.RowsAffected()
-	if rows == 0 {
-		return c.Status(404).JSON(fiber.Map{"error": "not found"})
-	}
-
-	return getBook(c)
+	return c.JSON(Book{
+		ID:     id,
+		Title:  input.Title,
+		Author: input.Author,
+		Year:   input.Year,
+	})
 }
 
 func deleteBook(c *fiber.Ctx) error {
