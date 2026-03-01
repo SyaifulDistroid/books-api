@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"database/sql"
@@ -36,6 +36,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	db.Exec(`
+	INSERT OR IGNORE INTO books (id, title, author, year)
+	VALUES (?, ?, ?, ?)
+	`, "e67d1777-99e9-4597-a33d-9cc2aa9ee44e", "Dune", "Frank Herbert", 2000)
 
 	app := fiber.New()
 
