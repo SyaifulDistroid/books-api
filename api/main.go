@@ -27,25 +27,25 @@ var app = fiber.New()
 
 func init() {
 	seed1 := Book{
-		ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee44e",
+		ID:     "1",
 		Title:  "Dune",
 		Author: "Frank Herbert",
 		Year:   2000,
 	}
 	seed2 := Book{
-		ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee443",
+		ID:     "2",
 		Title:  "1984",
 		Author: "George Orwell",
 		Year:   1949,
 	}
 	seed3 := Book{
-		ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee445",
+		ID:     "3",
 		Title:  "Animal Farm",
 		Author: "George Orwell",
 		Year:   1945,
 	}
 	seed4 := Book{
-		ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee446",
+		ID:     "4",
 		Title:  "Brave New World",
 		Author: "Aldous Huxley",
 		Year:   1932,
