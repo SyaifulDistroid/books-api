@@ -33,9 +33,9 @@ func init() {
 	}
 	seed2 := Book{
 		ID:     "2",
-		Title:  "Dune",
+		Title:  "1984",
 		Author: "George Orwell",
-		Year:   1942,
+		Year:   1949,
 	}
 	seed3 := Book{
 		ID:     "3",
@@ -45,7 +45,7 @@ func init() {
 	}
 	seed4 := Book{
 		ID:     "4",
-		Title:  "Lorem ipsum",
+		Title:  "1984",
 		Author: "George Orwell",
 		Year:   1949,
 	}
@@ -86,6 +86,9 @@ func init() {
 	books["21"] = Book{"21", "The Brothers Karamazov", "Fyodor Dostoevsky", 1880}
 	books["22"] = Book{"22", "Brave New World", "Aldous Huxley", 1932}
 	books["23"] = Book{"23", "The Road", "Cormac McCarthy", 2006}
+	books["24"] = Book{"24", "Homage to Catalonia", "George Orwell", 1938}
+	books["25"] = Book{"25", "Down and Out in Paris and London", "George Orwell", 1933}
+	books["26"] = Book{"26", "The Stranger", "Albert Camus", 1942}
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
