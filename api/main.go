@@ -38,11 +38,11 @@ func init() {
 		return c.JSON(fiber.Map{"token": token})
 	})
 
-	api := app.Group("/", authMiddleware)
+	app.Post("/books", createBook)
+	app.Get("/books", getBooks)
+	app.Get("/books/:id", getBook)
 
-	api.Post("/books", createBook)
-	api.Get("/books", getBooks)
-	api.Get("/books/:id", getBook)
+	api := app.Group("/", authMiddleware)
 	api.Put("/books/:id", updateBook)
 	api.Delete("/books/:id", deleteBook)
 }
