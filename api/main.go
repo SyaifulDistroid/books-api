@@ -23,7 +23,7 @@ var app = fiber.New()
 
 func init() {
 	seed := Book{
-		ID:     "1",
+		ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee44e",
 		Title:  "Dune",
 		Author: "Frank Herbert",
 	}
