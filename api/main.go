@@ -32,6 +32,22 @@ func init() {
 	}
 	books[seed.ID] = seed
 
+	seed2 := Book{
+		ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee44c",
+		Title:  "Dunex",
+		Author: "George Orwell",
+		Year:   2000,
+	}
+	books[seed2.ID] = seed2
+
+	seed3 := Book{
+		ID:     "e67d1777-99e9-4597-a33d-9cc2aa9ee44x",
+		Title:  "Dunez",
+		Author: "George Buss",
+		Year:   2000,
+	}
+	books[seed3.ID] = seed3
+
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
 			"success": true,
@@ -117,7 +133,6 @@ func getBooks(c *fiber.Ctx) error {
 		limit = 10
 	}
 
-	// STEP 1: FILTER DULU
 	var filtered []Book
 	for _, b := range books {
 		if author == "" || b.Author == author {
@@ -125,7 +140,6 @@ func getBooks(c *fiber.Ctx) error {
 		}
 	}
 
-	// STEP 2: PAGINATION SETELAH FILTER
 	start := (page - 1) * limit
 	if start >= len(filtered) {
 		return c.JSON([]Book{})
