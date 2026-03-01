@@ -160,7 +160,7 @@ func getBooks(c *fiber.Ctx) error {
 
 	var filtered []Book
 	for _, b := range books {
-		if author == "" || strings.EqualFold(strings.TrimSpace(b.Author), author) {
+		if author == "" {
 			filtered = append(filtered, b)
 		}
 	}
