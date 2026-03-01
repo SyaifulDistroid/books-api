@@ -1,4 +1,4 @@
-package handler
+package main
 
 import (
 	"fmt"
@@ -39,16 +39,16 @@ func init() {
 		Year:   1949,
 	}
 	seed3 := Book{
-		ID:     "3",
-		Title:  "Animal Farm",
-		Author: "George Orwell",
-		Year:   1945,
+		ID:     "1",
+		Title:  "Dune",
+		Author: "Frank Herbert",
+		Year:   2000,
 	}
 	seed4 := Book{
-		ID:     "4",
-		Title:  "Brave New World",
-		Author: "Aldous Huxley",
-		Year:   1932,
+		ID:     "2",
+		Title:  "1984",
+		Author: "George Orwell",
+		Year:   1949,
 	}
 
 	books[seed1.ID] = seed1
@@ -56,6 +56,8 @@ func init() {
 	books[seed3.ID] = seed3
 	books[seed4.ID] = seed4
 
+}
+func main() {
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
 			"success": true,
@@ -98,7 +100,7 @@ func init() {
 	api.Put("/:id", updateBook)
 	api.Delete("/:id", deleteBook)
 
-	// app.Listen(":3000")
+	app.Listen(":3000")
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
