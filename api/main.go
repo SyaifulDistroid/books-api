@@ -25,7 +25,8 @@ func init() {
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
-		"success": true,
+			"success": true,
+		})
 	})
 
 	app.Post("/echo", func(c *fiber.Ctx) error {
